@@ -4,12 +4,15 @@ import (
 	"bytes"
 	"encoding/binary"
 	"gateway/internal/client"
+	"gateway/internal/constants"
+	"gateway/internal/player"
 	"gateway/pkg/core"
 	"gateway/pkg/log"
 	"gateway/pkg/network"
 	msg "gateway/proto"
-	"google.golang.org/protobuf/proto"
 	"time"
+
+	"google.golang.org/protobuf/proto"
 )
 
 type ClientNetwork struct {
@@ -62,6 +65,13 @@ func (clientNetwork *ClientNetwork) React(packet []byte, c network.ChannelContex
 
 	body := make([]byte, bytebuffer.Len())
 	binary.Read(bytebuffer, binary.BigEndian, body)
+
+	//directly send to client
+	if innerMsg.GetSendType() == constants.INNER_MSG_SEND_AUTO {
+		//playerMgr
+		player.PlayerMgr.GetBySid(innerMsg.Id).Context.Ctx.AsyncWrite(body)
+		return
+	}
 
 	core.CallMethod(innerMsg.ProtoCode, body, c)
 	//log.Infof("---XXXXXXXXXXXXXXXXXXXX ---receive innerMsgLen = %d  innerMsgBody  =%s  protoCode =%d", innerHeaderLen, innerMsg, innerMsg.ProtoCode)
