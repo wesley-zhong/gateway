@@ -28,6 +28,7 @@ func (serverNetWork *ServerNetWork) OnOpened(c network.ChannelContext) (out []by
 // OnClosed fires when a connection has been closed.
 // The parameter err is the last known connection error.
 func (serverNetWork *ServerNetWork) OnClosed(c network.ChannelContext, err error) (action int) {
+	log.Infof("conn =%s closed", c.RemoteAddr())
 	return 1
 
 }
@@ -35,13 +36,14 @@ func (serverNetWork *ServerNetWork) OnClosed(c network.ChannelContext, err error
 // PreWrite fires just before a packet is written to the peer socket, this event function is usually where
 // you put some code of logging/counting/reporting or any fore operations before writing data to the peer.
 func (serverNetWork *ServerNetWork) PreWrite(c network.ChannelContext) {
+	log.Infof("conn =%s PreWrite", c.RemoteAddr())
 
 }
 
 // AfterWrite fires right after a packet is written to the peer socket, this event function is usually where
 // you put the []byte returned from React() back to your memory pool.
 func (serverNetWork *ServerNetWork) AfterWrite(c network.ChannelContext, b []byte) {
-
+	log.Infof("conn =%s AfterWrite", c.RemoteAddr())
 }
 
 // React fires when a socket receives data from the peer.

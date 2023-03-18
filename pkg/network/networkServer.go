@@ -48,7 +48,6 @@ func (ts tcpServer) OnOpened(c gnet.Conn) (out []byte, action gnet.Action) {
 // OnClosed fires when a connection has been closed.
 // The parameter err is the last known connection error.
 func (ts tcpServer) OnClosed(c gnet.Conn, err error) (action gnet.Action) {
-	log.Infof("conn =%s closed", c.RemoteAddr())
 	gGameEventHandler.OnClosed(c, err)
 	return
 
@@ -57,7 +56,6 @@ func (ts tcpServer) OnClosed(c gnet.Conn, err error) (action gnet.Action) {
 // PreWrite fires just before a packet is written to the peer socket, this event function is usually where
 // you put some code of logging/counting/reporting or any fore operations before writing data to the peer.
 func (ts tcpServer) PreWrite(c gnet.Conn) {
-	log.Infof("conn =%s PreWrite", c.RemoteAddr())
 	gGameEventHandler.PreWrite(c)
 	return
 }
@@ -65,7 +63,6 @@ func (ts tcpServer) PreWrite(c gnet.Conn) {
 // AfterWrite fires right after a packet is written to the peer socket, this event function is usually where
 // you put the []byte returned from React() back to your memory pool.
 func (ts tcpServer) AfterWrite(c gnet.Conn, b []byte) {
-	log.Infof("conn =%s AfterWrite", c.RemoteAddr())
 	gGameEventHandler.AfterWrite(c, b)
 	return
 }
