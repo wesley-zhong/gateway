@@ -15,10 +15,7 @@ type tcpServer struct {
 }
 
 func (ts tcpServer) React(frame []byte, c gnet.Conn) (out []byte, action gnet.Action) {
-	//	out = frame
 	log.Infof("conn =%s React", c.RemoteAddr())
-	//body := []byte("00000")
-	//c.AsyncWrite(body)
 	gGameEventHandler.React(frame, c)
 	return
 }
@@ -53,7 +50,8 @@ func (ts tcpServer) OnOpened(c gnet.Conn) (out []byte, action gnet.Action) {
 func (ts tcpServer) OnClosed(c gnet.Conn, err error) (action gnet.Action) {
 	log.Infof("conn =%s closed", c.RemoteAddr())
 	gGameEventHandler.OnClosed(c, err)
-	return 0
+	return
+
 }
 
 // PreWrite fires just before a packet is written to the peer socket, this event function is usually where
@@ -61,6 +59,7 @@ func (ts tcpServer) OnClosed(c gnet.Conn, err error) (action gnet.Action) {
 func (ts tcpServer) PreWrite(c gnet.Conn) {
 	log.Infof("conn =%s PreWrite", c.RemoteAddr())
 	gGameEventHandler.PreWrite(c)
+	return
 }
 
 // AfterWrite fires right after a packet is written to the peer socket, this event function is usually where
@@ -68,6 +67,7 @@ func (ts tcpServer) PreWrite(c gnet.Conn) {
 func (ts tcpServer) AfterWrite(c gnet.Conn, b []byte) {
 	log.Infof("conn =%s AfterWrite", c.RemoteAddr())
 	gGameEventHandler.AfterWrite(c, b)
+	return
 }
 
 // Tick fires immediately after the server starts and will fire again
@@ -89,8 +89,6 @@ func ServerStart(port int32, gameEventHandler GameEventHandler) {
 	err := gnet.Serve(ts, "tcp://:"+strconv.Itoa(int(port)),
 		gnet.WithMulticore(true),
 		gnet.WithReusePort(true),
-		gnet.WithLockOSThread(true),
-		gnet.WithNumEventLoop(4),
 		gnet.WithTCPNoDelay(0),
 		gnet.WithTicker(true),
 		gnet.WithCodec(NewLengthFieldBasedFrameCodecEx()))

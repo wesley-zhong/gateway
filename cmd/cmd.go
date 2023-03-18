@@ -18,9 +18,7 @@ func main() {
 	clientNetwork := networkHandler.ClientNetwork{}
 	network.ClientStart(&clientNetwork,
 		gnet.WithMulticore(true),
-		gnet.WithNumEventLoop(4),
 		gnet.WithReusePort(true),
-		//gnet.WithCodec()
 		gnet.WithTCPNoDelay(0))
 
 	controller.Init()

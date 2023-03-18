@@ -55,7 +55,6 @@ func (serverNetWork *ServerNetWork) AfterWrite(c network.ChannelContext, b []byt
 func (serverNetWork *ServerNetWork) React(packet []byte, ctx network.ChannelContext) (out []byte, action int) {
 	var msgId int32
 	bytebuffer := bytes.NewBuffer(packet)
-
 	binary.Read(bytebuffer, binary.BigEndian, &msgId)
 	var length uint32
 	binary.Read(bytebuffer, binary.BigEndian, &length)

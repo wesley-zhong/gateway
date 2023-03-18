@@ -1,6 +1,8 @@
 package network
 
 import (
+	"bytes"
+	"encoding/binary"
 	ringbuff "gateway/pkg/buff"
 	"gateway/pkg/log"
 	"net"
@@ -15,7 +17,7 @@ type ChannelContextWin struct {
 
 // Context returns a user-defined context.
 func (context *ChannelContextWin) Context() (ctx interface{}) {
-	return context.conn
+	return context.ctx
 }
 
 // SetContext sets a user-defined context.
@@ -42,25 +44,25 @@ func (context *ChannelContextWin) RemoteAddr() (addr net.Addr) {
 // If you have to use buf in a new goroutine, then you need to make a copy of buf and pass this copy
 // to that new goroutine.
 func (context *ChannelContextWin) Read() (buf []byte) {
-	body := make([]byte, 1024)
+	body := make([]byte, 4096)
 	readLen, err := context.conn.Read(body)
 	if err != nil {
 		return nil
 		panic(err)
 	}
-	//writeBuf := make([]byte, readLen)
-	context.recBuf.Write(body[:readLen])
-	context.recBuf.Write(body[:22])
-	receBufLen := context.recBuf.Length()
-	log.Infof("oooooooooo read bufLen =%d receivBuf=%d", readLen, receBufLen)
-	//check package
-	readTestBuf := make([]byte, 23)
-	context.recBuf.Read(readTestBuf)
 
-	receBufLen1 := context.recBuf.Length()
-	log.Infof("oooooooooo read bufLen =%d receivBuf=%d", readLen, receBufLen1)
-	//暂时先这样
-	context.handlerProcess.React(body, context)
+	context.recBuf.Write(body[:readLen])
+	recvBufLen := context.recBuf.Length()
+	var msgLen int32
+	bytebuffer := bytes.NewBuffer(context.recBuf.Bytes())
+	binary.Read(bytebuffer, binary.BigEndian, &msgLen)
+	//log.Infof("-------receive msg len = %d  readLen =%d", msgLen, readLen)
+	if msgLen+4 <= int32(recvBufLen) {
+		cmBody := make([]byte, msgLen+4)
+		context.recBuf.Read(cmBody)
+		//log.Infof("oooooooooo read bufLen =%d receivBufLen=%d  msgLen=%d leftlen=%d", readLen, recvBufLen, msgLen, context.recBuf.Length())
+		context.handlerProcess.React(cmBody[4:], context)
+	}
 	return nil
 }
 
@@ -137,3 +139,19 @@ func (context *ChannelContextWin) Close() error {
 	context.handlerProcess.OnClosed(context, nil)
 	return context.conn.Close()
 }
+
+//func (context *ChannelContextWin) Send(msgId int32, msg proto.Message) {
+//	marshal, err := proto.Marshal(msg)
+//	if err != nil {
+//		log.Error(err)
+//		return
+//	}
+//	body := make([]byte, len(marshal)+8)
+//	writeBuffer := bytes.NewBuffer(body)
+//	writeBuffer.Reset()
+//	binary.Write(writeBuffer, binary.BigEndian, msgId)
+//	binary.Write(writeBuffer, binary.BigEndian, int32(len(marshal)))
+//	binary.Write(writeBuffer, binary.BigEndian, marshal)
+//	context.AsyncWrite(writeBuffer.Bytes())
+//
+//}

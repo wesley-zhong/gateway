@@ -5,9 +5,9 @@ import (
 	"encoding/binary"
 	"gateway/pkg/log"
 	"gateway/pkg/network"
-	protoGen "gateway/proto"
-	"google.golang.org/protobuf/proto"
 	"sync/atomic"
+
+	"google.golang.org/protobuf/proto"
 )
 
 var sId int64
@@ -21,6 +21,7 @@ type ConnInnerClientContext struct {
 	Sid int64
 }
 
+// -------------- server innner client ----------------
 type ConnClientContext struct {
 	Ctx network.ChannelContext
 	Sid int64
@@ -58,11 +59,12 @@ func (client *ConnInnerClientContext) Send(msg *InnerMessage) {
 	client.Ctx.AsyncWrite(buffer.Bytes())
 }
 
+// - ------ user client -------------------
 func NewClientContext(context network.ChannelContext) *ConnClientContext {
 	return &ConnClientContext{Ctx: context, Sid: genSid()}
 }
 
-func (client *ConnClientContext) Send(msgId protoGen.ProtoCode, msg proto.Message) {
+func (client *ConnClientContext) Send(msgId int32, msg proto.Message) {
 	buffer := bytes.Buffer{}
 	buffer.Write(writeInt(int(msgId)))
 	marshal, err := proto.Marshal(msg)

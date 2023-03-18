@@ -4,8 +4,11 @@ import (
 	"bytes"
 	"encoding/binary"
 	"gateway/internal/client"
+	"gateway/pkg/core"
 	"gateway/pkg/log"
 	"gateway/pkg/network"
+	msg "gateway/proto"
+	"google.golang.org/protobuf/proto"
 	"time"
 )
 
@@ -47,16 +50,21 @@ func (clientNetwork *ClientNetwork) AfterWrite(c network.ChannelContext, b []byt
 // If you have to use packet in a new goroutine, then you need to make a copy of buf and pass this copy
 // to that new goroutine.
 func (clientNetwork *ClientNetwork) React(packet []byte, c network.ChannelContext) (out []byte, action int) {
-
-	log.Infof("  client receive addr =%s", c.RemoteAddr())
-
-	var msgId int32
+	log.Infof("  client React receive addr =%s", c.RemoteAddr())
+	var innerHeaderLen int32
 	bytebuffer := bytes.NewBuffer(packet)
+	binary.Read(bytebuffer, binary.BigEndian, &innerHeaderLen)
+	innerMsg := &msg.InnerHead{}
+	innerBody := make([]byte, innerHeaderLen)
+	binary.Read(bytebuffer, binary.BigEndian, innerBody)
 
-	binary.Read(bytebuffer, binary.BigEndian, &msgId)
-	var length uint32
-	binary.Read(bytebuffer, binary.BigEndian, &length)
-	log.Infof("---XXXXXXXXXXXXXXXXXXXX ---receive msgId = %d length =%d", msgId, length)
+	proto.Unmarshal(innerBody, innerMsg)
+
+	body := make([]byte, bytebuffer.Len())
+	binary.Read(bytebuffer, binary.BigEndian, body)
+
+	core.CallMethod(innerMsg.ProtoCode, body, c)
+	//log.Infof("---XXXXXXXXXXXXXXXXXXXX ---receive innerMsgLen = %d  innerMsgBody  =%s  protoCode =%d", innerHeaderLen, innerMsg, innerMsg.ProtoCode)
 	return nil, 0
 }
 
