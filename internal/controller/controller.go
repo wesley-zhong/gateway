@@ -120,5 +120,4 @@ func innerServerKickout(ctx network.ChannelContext, request proto.Message) {
 	context := ctx.Context().(*client.ConnInnerClientContext)
 	kickOut := request.(*protoGen.KickOutResponse)
 	log.Infof("login response = %d  sid =%d", kickOut.Reason, context.Sid)
-
 }

@@ -1,11 +1,12 @@
-//go:build linux
-// +build linux
+//go:build darwin || linux
+// +build darwin linux
 
 package network
 
 import (
-	"github.com/panjf2000/gnet"
 	"net"
+
+	"github.com/panjf2000/gnet"
 )
 
 type ChannelContextUnix struct {

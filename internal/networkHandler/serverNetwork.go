@@ -5,6 +5,7 @@ import (
 	"encoding/binary"
 	"gateway/internal/client"
 	"gateway/pkg/core"
+	"gateway/pkg/gopool"
 	"gateway/pkg/log"
 	"gateway/pkg/network"
 	"time"
@@ -18,10 +19,11 @@ func (serverNetWork *ServerNetWork) OnOpened(c network.ChannelContext) (out []by
 	c.SetContext(clientContext)
 	log.Infof("new connect addr =%s  id=%d", clientContext.Ctx.RemoteAddr(), clientContext.Sid)
 	//test for worker pool
-	//	workerPool := gopool.StartNewWorkerPool(2, 4)
-	//workerPool.SubmitTask(func() {
-	//	log.Infof("XXXXXXXXXXX  come from remoteAddr=%s", clientContext.Ctx.RemoteAddr())
-	//})
+	workerPool := gopool.StartNewWorkerPool(2, 4)
+	workerPool.SubmitTask(func() {
+		log.Infof("XXXXXXXXXXX  execute task come from remoteAddr=%s", clientContext.Ctx.RemoteAddr())
+	})
+	log.Infof("pppppppppppppppp sid=%d", clientContext.Sid)
 	return nil, 0
 }
 
