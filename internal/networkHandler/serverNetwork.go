@@ -44,8 +44,6 @@ func (serverNetWork *ServerNetWork) OnClosed(c network.ChannelContext, err error
 
 	}
 
-	return 1
-
 }
 
 // PreWrite fires just before a packet is written to the peer socket, this event function is usually where
