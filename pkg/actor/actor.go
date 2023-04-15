@@ -34,7 +34,7 @@ func (actor *Actor) Call(call func()) {
 
 func (actor *Actor) CallWithBack(call func(), callBack func(), calledActor *Actor) {
 	id := 444 //gen 64
-	actor.cbActors[int64(id)] = actor
+	actor.cbActors[int64(id)] = calledActor
 	callMethod := &CallMethod{
 		id:   int64(id),
 		call: call,

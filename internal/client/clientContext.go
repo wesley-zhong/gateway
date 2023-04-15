@@ -21,7 +21,7 @@ type ConnInnerClientContext struct {
 	Sid int64
 }
 
-// -------------- server innner client ----------------
+// ConnClientContext -------------- server innner client ----------------
 type ConnClientContext struct {
 	Ctx network.ChannelContext
 	Sid int64

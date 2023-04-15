@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"gateway/internal/client"
+	"gateway/internal/player"
 	"gateway/pkg/core"
 	"gateway/pkg/gopool"
 	"gateway/pkg/log"
@@ -30,7 +31,19 @@ func (serverNetWork *ServerNetWork) OnOpened(c network.ChannelContext) (out []by
 // OnClosed fires when a connection has been closed.
 // The parameter err is the last known connection error.
 func (serverNetWork *ServerNetWork) OnClosed(c network.ChannelContext, err error) (action int) {
-	log.Infof("conn =%s closed", c.RemoteAddr())
+	switch c.Context().(type) {
+	case *client.ConnClientContext:
+		log.Infof("addr =%d not login", c.RemoteAddr())
+		return 1
+	case *player.Player:
+		player := c.Context().(*player.Player)
+		log.Infof("conn =%s  sid=%d pid=%d  closed", c.RemoteAddr(), player.Context.Sid, player.Pid)
+		return 1
+	default:
+		return 1
+
+	}
+
 	return 1
 
 }

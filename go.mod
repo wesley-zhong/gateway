@@ -3,7 +3,7 @@ module gateway
 go 1.19
 
 require (
-	github.com/panjf2000/gnet v1.6.6
+	github.com/panjf2000/gnet v1.6.7
 	go.mongodb.org/mongo-driver v1.11.3
 	go.uber.org/zap v1.21.0
 	google.golang.org/protobuf v1.28.1
