@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"gateway/internal/controller"
-	"gateway/internal/networkHandler"
-	"gateway/pkg/network"
+	"gameSvr/internal/controller"
+	"gameSvr/internal/networkHandler"
+	"gameSvr/pkg/network"
 
 	"github.com/panjf2000/gnet"
 )
@@ -15,6 +15,7 @@ func main() {
 			fmt.Printf("run time panic: %v", x)
 		}
 	}()
+
 	clientNetwork := networkHandler.ClientNetwork{}
 	network.ClientStart(&clientNetwork,
 		gnet.WithMulticore(true),

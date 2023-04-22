@@ -1,7 +1,7 @@
 package actor
 
 import (
-	"gateway/pkg/log"
+	"gameSvr/pkg/log"
 	"time"
 )
 

@@ -5,7 +5,7 @@ package network
 
 import (
 	"fmt"
-	ringbuff "gateway/pkg/buff"
+	ringbuff "gameSrv/pkg/buff"
 	"net"
 	"sync"
 

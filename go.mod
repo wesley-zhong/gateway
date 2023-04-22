@@ -1,4 +1,4 @@
-module gateway
+module gameSvr
 
 go 1.19
 

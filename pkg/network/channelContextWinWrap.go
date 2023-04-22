@@ -6,7 +6,7 @@ package network
 import (
 	"bytes"
 	"encoding/binary"
-	ringbuff "gateway/pkg/buff"
+	ringbuff "gameSrv/pkg/buff"
 	"gateway/pkg/log"
 	"net"
 )

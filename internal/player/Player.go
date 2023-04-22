@@ -1,7 +1,7 @@
 package player
 
 import (
-	"gateway/internal/client"
+	"gameSvr/internal/client"
 )
 
 //------player

@@ -1,7 +1,7 @@
 package gopool
 
 import (
-	"gateway/pkg/log"
+	"gameSvr/pkg/log"
 	"sync/atomic"
 	"time"
 )
